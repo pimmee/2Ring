@@ -48,7 +48,7 @@ public class CameraController : MonoBehaviour {
 
     void MoveToTarget()
     {
-        destination = playerController.TargetRotation * offsetFromTarget;
+        // destination = playerController.TargetRotation * offsetFromTarget;
         destination += target.position;
         transform.position = destination;
     }

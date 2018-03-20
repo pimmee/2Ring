@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class AttackController : MonoBehaviour {
+public class AttackController : NetworkBehaviour {
 
-    public PlayerController player;
-    public Rigidbody firebolt;
+    public GameObject PlayerUnitPrefab;
+    public GameObject FireBoltPrefab;
     public Transform firePoint;
 
     public float fireRate = 1f;
@@ -13,23 +14,18 @@ public class AttackController : MonoBehaviour {
     public float damage = 1;
     
     public float speed = 10f;
-   
-
 	// Use this for initialization
 	void Start () {
-		
 	}
 
     // Update is called once per frame
     void Update()
     {
-
         firePoint.transform.rotation = this.transform.rotation;
-
         cooldown -= Time.deltaTime;
         if(Input.GetKeyDown(KeyCode.Alpha1))
         {
-            Fire();
+            CmdFire();
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
@@ -37,13 +33,19 @@ public class AttackController : MonoBehaviour {
         }
     }
 
-    void Fire()
-    {
-       Rigidbody newFirebolt = (Rigidbody)Instantiate(firebolt, firePoint.transform.position, firePoint.transform.rotation);
-        newFirebolt.velocity = firePoint.transform.forward * speed;
+    [Command]
+    void CmdFire()
+    {   
         if (cooldown > 0)
             return;
 
+        var firebolt = Instantiate(FireBoltPrefab, firePoint.transform.position, firePoint.transform.rotation);
+        firebolt.GetComponent<Rigidbody>().velocity = firebolt.transform.forward * speed;
+
+        NetworkServer.Spawn(firebolt);
+        Destroy(firebolt, 2.0f);
+        cooldown = 2;
+        //CmdShootFirebolt();
         //Ray ray = new Ray(firePoint.transform.position, firePoint.transform.forward);
         //RaycastHit hitInfo;
         //if(Physics.Raycast(ray, out hitInfo))
@@ -71,9 +73,15 @@ public class AttackController : MonoBehaviour {
 
     void Teleport()
     {
-        Debug.Log(player.transform.position);
-        Vector3 teleportTo = player.transform.position + player.transform.forward * 3;
-        player.transform.position = teleportTo;
-        Debug.Log(player.transform.position);
+        Vector3 teleportTo = PlayerUnitPrefab.transform.position + PlayerUnitPrefab.transform.forward * 5;
+        PlayerUnitPrefab.transform.position = teleportTo;
+    }
+
+    [Command]
+    void CmdShootFirebolt() {
+        //GameObject newFirebolt = Instantiate(firebolt, firePoint.transform.position, firePoint.transform.rotation);
+        //newFirebolt = firePoint.transform.forward * speed;
+        Debug.Log("Fire!");
+        //NetworkServer.SpawnWithClientAuthority(newFirebolt, connectionToClient);
     }
 }

@@ -73,7 +73,7 @@ namespace DigitalRuby.PyroParticles
                 // already collided, don't do anything
                 return;
             }
-            Debug.Log("Collision");
+            Debug.Log("Collision with : " + c.gameObject.name);
             // stop the projectile
             collided = true;
             Stop();

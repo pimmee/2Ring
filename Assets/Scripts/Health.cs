@@ -1,32 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
+    public const float maxHealth = 100;
+    public float currentHealth = maxHealth;
+    public RectTransform healthBar;
 
-    public float hitPoints = 100f;
-    float currentHitPoints;
-
-    void Start()
+    public void TakeDamage(float amount)
     {
-        currentHitPoints = hitPoints;
-    }
+        currentHealth -= amount;
+        Debug.Log(currentHealth);
 
-
-    public void TakeDamage(float amt)
-    {
-        currentHitPoints -= amt;
-        Debug.Log(currentHitPoints);
-
-        if (currentHitPoints <= 0)
+        if (currentHealth <= 0)
         {
+            currentHealth = 0;
             Die();
         }
+        
+        healthBar.sizeDelta = new Vector2(currentHealth, healthBar.sizeDelta.y);
     }
 
     void Die()
     {
-
+        Debug.Log("Dead");
     }
 }
