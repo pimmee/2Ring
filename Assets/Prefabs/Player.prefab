@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 223340981069229368}
   - component: {fileID: 114837537319785712}
   - component: {fileID: 114121845658198632}
-  - component: {fileID: 114336932045041230}
+  - component: {fileID: 114356106352141892}
   m_Layer: 5
   m_Name: Healthbar Canvas
   m_TagString: Untagged
@@ -157,7 +157,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1446146014831092}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0, z: 1}
+  m_LocalPosition: {x: 0.5, y: 0, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4875830421826594}
@@ -345,6 +345,7 @@ MonoBehaviour:
     type: 2}
   firePoint: {fileID: 4581447463084472}
   speed: 10
+  bulletSpeed: 12
 --- !u!114 &114121845658198632
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -420,7 +421,7 @@ MonoBehaviour:
     i15: 73
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
---- !u!114 &114336932045041230
+--- !u!114 &114356106352141892
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -428,7 +429,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1542005771610096}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30d5224fd27a6485a90d672adb7c6f66, type: 3}
+  m_Script: {fileID: 11500000, guid: 9aea9f9292ef8ac42a5785fcb099d65d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114458476741937624
@@ -587,8 +588,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -189.5, y: -219}
-  m_SizeDelta: {x: 100, y: 10}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224386279445750960
 RectTransform:
@@ -625,5 +626,5 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 100, y: 10}
+  m_SizeDelta: {x: 100, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}

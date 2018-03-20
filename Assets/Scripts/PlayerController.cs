@@ -15,6 +15,7 @@ public class PlayerController : NetworkBehaviour
     public Transform firePoint;
     Plane groundPlane;
     public float speed = 10;
+    public float bulletSpeed = 12;
     void Start()
     {
         cam = FindObjectOfType<Camera>();
@@ -26,6 +27,7 @@ public class PlayerController : NetworkBehaviour
         if (!isLocalPlayer){
             return;
         }
+
         Move();
         Attack();
     }
@@ -41,6 +43,7 @@ public class PlayerController : NetworkBehaviour
             CmdShoot();
         }
     }
+
     //All Commands will be called by the client, but run on the server.
     [Command]
     void CmdShoot() {
@@ -49,7 +52,7 @@ public class PlayerController : NetworkBehaviour
             firePoint.position,
             firePoint.rotation);
 
-        bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * 6;
+        bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * bulletSpeed;
 
         NetworkServer.Spawn(bullet);
         Destroy(bullet, 2.0f);
@@ -68,16 +71,9 @@ public class PlayerController : NetworkBehaviour
             mousePosition.y = transform.position.y;
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log(transform.position);
                 clickedPosition = ray.GetPoint(rayLength);
                 transform.LookAt(new Vector3(clickedPosition.x, transform.position.y, clickedPosition.z));
             }
         }
     }
-
-    void FixedUpdate()
-    {
-        //rBody.velocity = moveVelocity;
-    }
-
 }
