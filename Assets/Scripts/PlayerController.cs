@@ -10,14 +10,17 @@ public class PlayerController : NetworkBehaviour
     private Camera cam;
     public Vector3 clickedPosition;
     public Vector3 mousePosition;
+    private bool moving = false;
 
     public GameObject bulletPrefab;
     public Transform firePoint;
     Plane groundPlane;
+    private GameObject circle;
     public float speed = 10;
     public float bulletSpeed = 12;
     void Start()
     {
+        circle = GameObject.Find("Circle");
         cam = FindObjectOfType<Camera>();
         groundPlane = new Plane(Vector3.up, Vector3.zero);
     }
@@ -27,14 +30,15 @@ public class PlayerController : NetworkBehaviour
         if (!isLocalPlayer){
             return;
         }
-
         Move();
         Attack();
+        CheckOutside();
     }
 
        public override void OnStartLocalPlayer()
     {
         GetComponent<MeshRenderer>().material.color = Color.blue;
+        Camera.main.GetComponent<CameraFollow>().SetTarget(transform);
     }
 
     void Attack()
@@ -47,12 +51,13 @@ public class PlayerController : NetworkBehaviour
     //All Commands will be called by the client, but run on the server.
     [Command]
     void CmdShoot() {
+        firePoint.position = transform.position + (mousePosition - transform.position).normalized*1.5f;
         var bullet = (GameObject) Instantiate(
             bulletPrefab,
             firePoint.position,
             firePoint.rotation);
 
-        bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * bulletSpeed;
+        bullet.GetComponent<Rigidbody>().velocity = mousePosition.normalized * bulletSpeed;
 
         NetworkServer.Spawn(bullet);
         Destroy(bullet, 2.0f);
@@ -61,8 +66,12 @@ public class PlayerController : NetworkBehaviour
     void Move() 
     {
         step = speed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, clickedPosition, step);
-
+        if (moving && transform.position == clickedPosition) {
+            moving = false;
+        }
+        if (moving) {
+            transform.position = Vector3.MoveTowards(transform.position, clickedPosition, step);
+        }
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         float rayLength;
         if (groundPlane.Raycast(ray, out rayLength))
@@ -71,9 +80,18 @@ public class PlayerController : NetworkBehaviour
             mousePosition.y = transform.position.y;
             if (Input.GetMouseButtonDown(0))
             {
+                moving = true;
                 clickedPosition = ray.GetPoint(rayLength);
                 transform.LookAt(new Vector3(clickedPosition.x, transform.position.y, clickedPosition.z));
             }
+        }
+    }
+
+    void CheckOutside() {
+        print(circle.transform.localScale);
+        if (Vector3.Distance(Vector3.zero, transform.position) > Vector3.Distance(Vector3.zero, circle.transform.localScale) / 3) {
+            Health health = GetComponent<Health>();
+            health.TakeDamage(0.15f);
         }
     }
 }
